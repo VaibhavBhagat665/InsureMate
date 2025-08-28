@@ -17,6 +17,12 @@ export class DocumentService {
     request: DocumentAnalysisRequest,
   ): Promise<DocumentAnalysisResponse> {
     try {
+      // Convert the document URL to a direct download URL if needed
+      const convertedRequest = {
+        ...request,
+        documents: this.convertToDirectUrl(request.documents)
+      };
+
       const response = await fetch(this.API_URL, {
         method: "POST",
         headers: {
@@ -24,7 +30,7 @@ export class DocumentService {
           Accept: "application/json",
           Authorization: `Bearer ${this.AUTH_TOKEN}`,
         },
-        body: JSON.stringify(request),
+        body: JSON.stringify(convertedRequest),
       });
 
       if (!response.ok) {
@@ -39,10 +45,56 @@ export class DocumentService {
     }
   }
 
+  static convertToDirectUrl(url: string): string {
+    try {
+      const urlObj = new URL(url);
+      
+      // Convert Google Drive sharing link to direct download
+      if (urlObj.hostname === 'drive.google.com' && url.includes('/file/d/')) {
+        const fileIdMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+        if (fileIdMatch) {
+          const fileId = fileIdMatch[1];
+          return `https://drive.google.com/uc?export=download&id=${fileId}`;
+        }
+      }
+      
+      // Convert Dropbox sharing link to direct download
+      if (urlObj.hostname === 'www.dropbox.com' && url.includes('dropbox.com')) {
+        return url.replace('www.dropbox.com', 'dl.dropboxusercontent.com').replace('?dl=0', '');
+      }
+      
+      // For direct PDF URLs, return as-is
+      return url;
+    } catch {
+      return url;
+    }
+  }
+
   static isValidUrl(url: string): boolean {
     try {
-      new URL(url);
-      return url.toLowerCase().endsWith(".pdf");
+      const urlObj = new URL(url);
+      
+      // Accept direct PDF URLs
+      if (url.toLowerCase().endsWith('.pdf')) {
+        return true;
+      }
+      
+      // Accept Google Drive links
+      if (urlObj.hostname === 'drive.google.com' && url.includes('/file/d/')) {
+        return true;
+      }
+      
+      // Accept Dropbox links
+      if (urlObj.hostname === 'www.dropbox.com' && url.includes('dropbox.com')) {
+        return true;
+      }
+      
+      // Accept OneDrive links
+      if (urlObj.hostname.includes('1drv.ms') || urlObj.hostname.includes('onedrive.live.com')) {
+        return true;
+      }
+      
+      return false;
     } catch {
       return false;
     }
