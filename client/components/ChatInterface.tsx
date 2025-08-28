@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { DocumentService } from "@/lib/document-service";
 import { ExampleQuestions } from "@/components/ExampleQuestions";
+import { DebugPanel } from "@/components/DebugPanel";
 import { cn } from "@/lib/utils";
 
 interface Message {
@@ -81,9 +82,11 @@ export function ChatInterface() {
         "Awesome! 🎉 Your document is ready. Fire away with your questions!",
       );
     } catch (error) {
+      console.error("Document loading error:", error);
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
       addMessage(
         "system",
-        "Hmm, having trouble loading that document 🤔 Double-check the URL and give it another shot!",
+        `Hmm, having trouble loading that document 🤔\n\nError: ${errorMessage}\n\nTips:\n• Make sure your Google Drive file is shared publicly (Anyone with the link)\n• Try a direct PDF URL instead\n• Check if the file is actually a PDF`,
       );
     } finally {
       setIsLoading(false);
@@ -138,6 +141,9 @@ export function ChatInterface() {
 
   return (
     <div className="flex flex-col h-full max-w-5xl mx-auto p-4 space-y-6">
+      {/* Debug Panel - Temporary */}
+      <DebugPanel />
+
       {/* Document Upload Section */}
       <Card className="border-purple-200 bg-gradient-to-r from-purple-50/80 to-pink-50/80 backdrop-blur-sm shadow-lg">
         <CardHeader className="pb-4">
