@@ -18,10 +18,18 @@ export class DocumentService {
   ): Promise<DocumentAnalysisResponse> {
     try {
       // Convert the document URL to a direct download URL if needed
+      const originalUrl = request.documents;
+      const convertedUrl = this.convertToDirectUrl(request.documents);
+
+      console.log("Original URL:", originalUrl);
+      console.log("Converted URL:", convertedUrl);
+
       const convertedRequest = {
         ...request,
-        documents: this.convertToDirectUrl(request.documents)
+        documents: convertedUrl
       };
+
+      console.log("Sending request to ML service:", convertedRequest);
 
       const response = await fetch(this.API_URL, {
         method: "POST",
@@ -33,14 +41,22 @@ export class DocumentService {
         body: JSON.stringify(convertedRequest),
       });
 
+      console.log("ML service response status:", response.status);
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        console.error("ML service error response:", errorText);
+        throw new Error(`ML service error (${response.status}): ${errorText}`);
       }
 
       const data = await response.json();
+      console.log("ML service response data:", data);
       return data;
     } catch (error) {
       console.error("Error analyzing document:", error);
+      if (error instanceof Error) {
+        throw new Error(`Failed to analyze document: ${error.message}`);
+      }
       throw new Error("Failed to analyze document. Please try again.");
     }
   }
