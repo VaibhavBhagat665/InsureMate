@@ -62,7 +62,7 @@ export function ChatInterface() {
     if (!DocumentService.isValidUrl(pdfUrl)) {
       addMessage(
         "system",
-        "Oops! 😅 That doesn't look like a valid PDF URL. Try something like: https://example.com/document.pdf",
+        "Oops! 😅 That doesn't look like a valid document URL. I support:\n• Direct PDF links (ending in .pdf)\n• Google Drive sharing links\n• Dropbox sharing links\n• OneDrive sharing links\n\nMake sure your file is publicly accessible!",
       );
       return;
     }
@@ -152,7 +152,7 @@ export function ChatInterface() {
         <CardContent>
           <div className="flex gap-3">
             <Input
-              placeholder="Paste your PDF URL here... (e.g., https://example.com/policy.pdf)"
+              placeholder="Paste your PDF URL here... (Google Drive, Dropbox, OneDrive, or direct PDF links)"
               value={pdfUrl}
               onChange={(e) => setPdfUrl(e.target.value)}
               onKeyDown={handleKeyPress}
