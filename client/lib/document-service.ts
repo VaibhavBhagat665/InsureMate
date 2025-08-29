@@ -61,12 +61,12 @@ export class DocumentService {
     try {
       const urlObj = new URL(url);
       
-      // Convert Google Drive sharing link to direct download
+      // Convert Google Drive sharing link to direct download (updated format as of May 2024)
       if (urlObj.hostname === 'drive.google.com' && url.includes('/file/d/')) {
         const fileIdMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
         if (fileIdMatch) {
           const fileId = fileIdMatch[1];
-          return `https://drive.google.com/uc?export=download&id=${fileId}`;
+          return `https://drive.usercontent.google.com/download?id=${fileId}&export=download`;
         }
       }
       
