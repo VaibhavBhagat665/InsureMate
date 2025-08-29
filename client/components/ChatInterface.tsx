@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import { DocumentService } from "@/lib/document-service";
 import { ExampleQuestions } from "@/components/ExampleQuestions";
-import { DebugPanel } from "@/components/DebugPanel";
 import { cn } from "@/lib/utils";
 
 interface Message {
@@ -141,8 +140,6 @@ export function ChatInterface() {
 
   return (
     <div className="flex flex-col h-full max-w-5xl mx-auto p-4 space-y-6">
-      {/* Debug Panel - Temporary */}
-      <DebugPanel />
 
       {/* Document Upload Section */}
       <Card className="border-purple-200 bg-gradient-to-r from-purple-50/80 to-pink-50/80 backdrop-blur-sm shadow-lg">
