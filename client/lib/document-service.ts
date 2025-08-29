@@ -8,10 +8,7 @@ export interface DocumentAnalysisResponse {
 }
 
 export class DocumentService {
-  private static readonly API_URL =
-    "https://intelligent-doc-system-390083348949.us-central1.run.app/api/v1/hackrx/run";
-  private static readonly AUTH_TOKEN =
-    "3689cf11b1e8589b1737ce1dc0cb301728be4261489173d3b07fa8feff7c71ea";
+  private static readonly API_URL = "/api/analyze-document";
 
   static async analyzeDocument(
     request: DocumentAnalysisRequest,
@@ -29,28 +26,27 @@ export class DocumentService {
         documents: convertedUrl
       };
 
-      console.log("Sending request to ML service:", convertedRequest);
+      console.log("Sending request to document analysis service:", convertedRequest);
 
       const response = await fetch(this.API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Authorization: `Bearer ${this.AUTH_TOKEN}`,
         },
         body: JSON.stringify(convertedRequest),
       });
 
-      console.log("ML service response status:", response.status);
+      console.log("Document analysis response status:", response.status);
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error("ML service error response:", errorText);
-        throw new Error(`ML service error (${response.status}): ${errorText}`);
+        console.error("Document analysis error response:", errorText);
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log("ML service response data:", data);
+      console.log("Document analysis response data:", data);
       return data;
     } catch (error) {
       console.error("Error analyzing document:", error);
