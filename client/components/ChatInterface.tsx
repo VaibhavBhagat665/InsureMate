@@ -82,7 +82,8 @@ export function ChatInterface() {
       );
     } catch (error) {
       console.error("Document loading error:", error);
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
       addMessage(
         "system",
         `Hmm, having trouble loading that document 🤔\n\nError: ${errorMessage}\n\nTips:\n• Make sure your Google Drive file is shared publicly (Anyone with the link)\n• Try a direct PDF URL instead\n• Check if the file is actually a PDF`,
@@ -140,7 +141,6 @@ export function ChatInterface() {
 
   return (
     <div className="flex flex-col h-full max-w-5xl mx-auto p-4 space-y-6">
-
       {/* Document Upload Section */}
       <Card className="border-purple-200 bg-gradient-to-r from-purple-50/80 to-pink-50/80 backdrop-blur-sm shadow-lg">
         <CardHeader className="pb-4">

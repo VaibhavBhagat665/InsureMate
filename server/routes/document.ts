@@ -15,17 +15,19 @@ export const handleDocumentAnalysis: RequestHandler = async (req, res) => {
 
     if (!documents || !questions || !Array.isArray(questions)) {
       return res.status(400).json({
-        error: "Invalid request. 'documents' (string) and 'questions' (array) are required."
+        error:
+          "Invalid request. 'documents' (string) and 'questions' (array) are required.",
       });
     }
 
-    const EXTERNAL_API_URL = "https://intelligent-doc-system-390083348949.us-central1.run.app/api/v1/hackrx/run";
+    const EXTERNAL_API_URL =
+      "https://intelligent-doc-system-390083348949.us-central1.run.app/api/v1/hackrx/run";
     const AUTH_TOKEN = process.env.HACKRX_AUTH_TOKEN;
 
     if (!AUTH_TOKEN) {
       console.error("HACKRX_AUTH_TOKEN environment variable is not set");
       return res.status(500).json({
-        error: "Authentication token not configured"
+        error: "Authentication token not configured",
       });
     }
 
@@ -37,20 +39,20 @@ export const handleDocumentAnalysis: RequestHandler = async (req, res) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": `Bearer ${AUTH_TOKEN}`
+        Accept: "application/json",
+        Authorization: `Bearer ${AUTH_TOKEN}`,
       },
       body: JSON.stringify({
         documents,
-        questions
-      })
+        questions,
+      }),
     });
 
     if (!externalResponse.ok) {
       const errorText = await externalResponse.text();
       console.error("External API error:", externalResponse.status, errorText);
       return res.status(500).json({
-        error: `External API error: ${externalResponse.status}`
+        error: `External API error: ${externalResponse.status}`,
       });
     }
 
@@ -59,14 +61,14 @@ export const handleDocumentAnalysis: RequestHandler = async (req, res) => {
 
     // Ensure the response matches our expected format
     const response: DocumentAnalysisResponse = {
-      answers: externalData.answers || []
+      answers: externalData.answers || [],
     };
 
     res.json(response);
   } catch (error) {
     console.error("Document analysis error:", error);
     res.status(500).json({
-      error: "Internal server error during document analysis"
+      error: "Internal server error during document analysis",
     });
   }
 };
